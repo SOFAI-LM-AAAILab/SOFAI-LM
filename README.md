@@ -1,7 +1,5 @@
 # SOFAI-Core
 
-**A Modular Neurosymbolic Framework for Constraint Satisfaction Problems**
-
 ## Overview
 
 SOFAI-Core is a domain-agnostic neurosymbolic framework that implements the **"Thinking, Fast and Slow"** paradigm for solving Constraint Satisfaction Problems (CSPs). The framework integrates:
