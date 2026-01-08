@@ -7,7 +7,7 @@
 SOFAI-Core is a domain-agnostic neurosymbolic framework that implements the **"Thinking, Fast and Slow"** paradigm for solving Constraint Satisfaction Problems (CSPs). The framework integrates:
 
 - **System 1 (S1)**: Fast, experience-driven solving using Large Language Models (LLMs)
-- **System 2 (S2)**: Slow, deliberate solving using Large Language Models (LLMs) with potentially different model
+- **System 2 (S2)**: Slow, deliberate solving using Large Reasoning Models (LRMs) with potentially different model
 - **Episodic Memory**: Leverages past solutions to improve future performance
 - **Iterative Refinement**: Feedback-driven learning loop
 
@@ -25,13 +25,13 @@ SOFAI-Core provides an abstract framework where different problem domains (graph
 
 ### Graph Coloring
 - **S1 Solver**: LLM (Mistral-7B or other Ollama models) - fast, iterative
-- **S2 Solver**: LLM (same or different Ollama model) - deliberate reasoning
+- **S2 Solver**: LRM (Ollama model) - deliberate reasoning
 - **Problem Generator**: Erdős–Rényi random graphs
 - **Validator**: Constraint checking for adjacent vertices
 
 ### Code Debugging
 - **S1 Solver**: LLM (Mistral-7B or other Ollama models) - fast, iterative debugging
-- **S2 Solver**: LLM (same or different Ollama model) - deliberate debugging
+- **S2 Solver**: LRM (Ollama model) - deliberate debugging
 - **Dataset**: DebugBench (4,253 debugging instances, Python3)
 - **Validator**: LeetCode API with real test case execution
 - **Bug Types**: 17 categories (condition, variable_misuse, function_misuse, etc.)
@@ -52,7 +52,7 @@ SOFAI-Core/
 │   │   ├── graph_coloring_domain.py  # Domain implementation
 │   │   ├── generator.py           # Problem generator
 │   │   ├── validator.py           # Solution validator
-│   │   ├── s2_solver.py           # (Legacy) DSATUR algorithm
+│   │   ├── s2_solver.py           # LRM
 │   │   ├── prompt_builder.py      # LLM prompt construction
 │   │   ├── solution_parser.py     # Parse LLM output
 │   │   └── utils.py               # DIMACS parser
