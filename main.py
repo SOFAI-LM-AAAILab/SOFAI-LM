@@ -29,6 +29,43 @@ def ensure_ollama_running():
         print("Please ensure Ollama is installed and running.")
 
 
+def ensure_model_available(model_name: str):
+    """
+    Check if an Ollama model is available locally, and pull it if not.
+
+    Args:
+        model_name: Name of the Ollama model to check/pull.
+    """
+    try:
+        # Check if model exists
+        result = subprocess.run(
+            ['ollama', 'list'],
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+        if result.returncode == 0 and model_name in result.stdout:
+            print(f"Model '{model_name}' is available.")
+            return
+
+        # Model not found, attempt to pull
+        print(f"Model '{model_name}' not found locally. Pulling...")
+        pull_result = subprocess.run(
+            ['ollama', 'pull', model_name],
+            timeout=600  # 10 minutes timeout for large models
+        )
+        if pull_result.returncode == 0:
+            print(f"Model '{model_name}' pulled successfully.")
+        else:
+            print(f"Warning: Failed to pull model '{model_name}'.")
+    except subprocess.TimeoutExpired:
+        print(f"Warning: Timeout while pulling model '{model_name}'.")
+    except FileNotFoundError:
+        print("Warning: Ollama not found. Please install Ollama first.")
+    except Exception as e:
+        print(f"Warning: Could not check/pull model '{model_name}': {e}")
+
+
 def main():
     """Main entry point for SOFAI-Core."""
     parser = argparse.ArgumentParser(
@@ -106,6 +143,11 @@ def main():
 
     # Ensure Ollama is running
     ensure_ollama_running()
+
+    # Ensure required models are available (auto-pull if needed)
+    ensure_model_available(args.model)
+    if args.s2_model and args.s2_model != args.model:
+        ensure_model_available(args.s2_model)
 
     # Initialize domain
     print(f"\n{'='*60}")
