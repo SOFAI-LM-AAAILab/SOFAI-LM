@@ -27,7 +27,8 @@ class CodeDebuggingDomain(DomainInterface):
 
     def __init__(self):
         """Initialize the code debugging domain."""
-        self.language = "Python3"
+        self.language = "Python3"  # For data loader (file lookup)
+        self.leetcode_language = "python"  # For LeetCode API
 
     def generate_problem(self, **kwargs) -> CodeDebuggingProblem:
         """
@@ -69,7 +70,7 @@ class CodeDebuggingDomain(DomainInterface):
         is_valid, feedback = validate_code_with_leetcode(
             code=solution,
             task_id=problem.slug,
-            language=self.language
+            language=self.leetcode_language  # Use lowercase for LeetCode API
         )
 
         return is_valid, feedback

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     task_id = TEST_CASE['task_id']
     code0 = TEST_CASE['original_code']
     code1 = TEST_CASE['problematic_code']
-    codes = [code0, code1] * 100
+    codes = [code0, code1]
 
     for code in codes:
         print(tester.test(code, task_id, "python"))

@@ -43,7 +43,7 @@ def get_leetcode_tester() -> 'LeetCodeTester':
     return _tester_instance
 
 
-def validate_code_with_leetcode(code: str, task_id: str, language: str = "Python3") -> Tuple[bool, Dict]:
+def validate_code_with_leetcode(code: str, task_id: str, language: str = "python") -> Tuple[bool, Dict]:
     """
     Validate code using LeetCode API.
 

@@ -3,3 +3,5 @@ matplotlib
 streamlit
 ollama
 rank_bm25
+gym
+python-leetcode
