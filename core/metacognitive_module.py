@@ -2,7 +2,7 @@
 Core metacognitive module for SOFAI-Core framework.
 
 This module implements the domain-agnostic solving logic that coordinates
-System 1 (LLM), System 2 (LLM), episodic memory, and iterative refinement.
+System 1 (LLM), System 2 (LRM), episodic memory, and iterative refinement.
 """
 
 import time
@@ -19,28 +19,28 @@ class MCModule:
     Domain-agnostic metacognitive module implementing the SOFAI architecture.
 
     This module coordinates the iterative refinement loop between System 1 (LLM)
-    and System 2 (LLM), leveraging episodic memory and feedback mechanisms.
+    and System 2 (LRM), leveraging episodic memory and feedback mechanisms.
     """
 
     def __init__(
         self,
         domain: DomainInterface,
-        llm_model: str = "mistral",
+        s1_llm: str = "gemma3:1b",
         max_iterations: int = 5,
-        s2_llm_model: Optional[str] = None
+        s2_lrm: str = "deepseek-r1:1.5b"
     ):
         """
         Initialize the SOFAI metacognitive module.
 
         Args:
             domain: Domain-specific implementation of DomainInterface.
-            llm_model: Name of the LLM model to use for S1 (default: mistral).
+            s1_llm: Name of the LLM model to use for S1 (default: gemma3:1b).
             max_iterations: Maximum number of S1 refinement iterations (default: 5).
-            s2_llm_model: Name of the LLM model to use for S2. If None, uses same as llm_model (default: None).
+            s2_lrm: Name of the LRM model to use for S2 (default: deepseek-r1:1.5b).
         """
         self.domain = domain
-        self.llm_solver = LLMSolver(model=llm_model)
-        self.s2_llm_solver = LLMSolver(model=s2_llm_model if s2_llm_model else llm_model)
+        self.s1_solver = LLMSolver(model=s1_llm)
+        self.s2_solver = LLMSolver(model=s2_lrm)
         self.episodic_memory = EpisodicMemory()
         self.max_iterations = max_iterations
 
@@ -100,7 +100,7 @@ class MCModule:
 
             # S1: Generate solution using LLM
             s1_iter_start = time.time()
-            llm_response = self.llm_solver.generate_response(messages)
+            llm_response = self.s1_solver.generate_response(messages)
             s1_iter_time = time.time() - s1_iter_start
             s1_time += s1_iter_time
 
@@ -137,11 +137,11 @@ class MCModule:
                         print(f"\nReached maximum iterations ({self.max_iterations})")
                     else:
                         print("\nNo improvement detected in feedback")
-                    print("Invoking System 2 (LLM solver)...\n")
+                    print("Invoking System 2 (LRM solver)...\n")
 
-                # S2: LLM solver
+                # S2: LRM solver
                 s2_start = time.time()
-                s2_solution, s2_metadata = self.domain.run_s2_solver(problem, self.s2_llm_solver)
+                s2_solution, s2_metadata = self.domain.run_s2_solver(problem, self.s2_solver)
                 s2_time = time.time() - s2_start
 
                 if verbose:

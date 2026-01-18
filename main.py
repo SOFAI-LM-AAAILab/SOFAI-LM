@@ -81,12 +81,12 @@ def main():
         help="Domain to solve"
     )
 
-    # LLM configuration
+    # S1 LLM and S2 LRM configuration
     parser.add_argument(
-        "--model",
+        "--s1-llm",
         type=str,
-        default="mistral",
-        help="Ollama model to use (default: mistral)"
+        default="gemma3:1b",
+        help="Ollama model for S1 LLM (default: gemma3:1b)"
     )
 
     parser.add_argument(
@@ -97,10 +97,10 @@ def main():
     )
 
     parser.add_argument(
-        "--s2-model",
+        "--s2-lrm",
         type=str,
-        default=None,
-        help="Ollama model to use for S2 (default: same as --model)"
+        default="deepseek-r1:1.5b",
+        help="Ollama model for S2 LRM (default: deepseek-r1:1.5b)"
     )
 
     # Graph coloring specific arguments
@@ -145,15 +145,16 @@ def main():
     ensure_ollama_running()
 
     # Ensure required models are available (auto-pull if needed)
-    ensure_model_available(args.model)
-    if args.s2_model and args.s2_model != args.model:
-        ensure_model_available(args.s2_model)
+    ensure_model_available(args.s1_llm)
+    if args.s2_lrm and args.s2_lrm != args.s1_llm:
+        ensure_model_available(args.s2_lrm)
 
     # Initialize domain
     print(f"\n{'='*60}")
     print(f"SOFAI-Core Framework")
     print(f"Domain: {args.domain}")
-    print(f"Model: {args.model}")
+    print(f"S1 LLM: {args.s1_llm}")
+    print(f"S2 LRM: {args.s2_lrm}")
     print(f"{'='*60}\n")
 
     if args.domain == "graph_coloring":
@@ -201,9 +202,9 @@ def main():
     # Initialize and run MC module
     mc = MCModule(
         domain=domain,
-        llm_model=args.model,
+        s1_llm=args.s1_llm,
         max_iterations=args.max_iterations,
-        s2_llm_model=args.s2_model
+        s2_lrm=args.s2_lrm
     )
 
     # Solve
@@ -214,7 +215,7 @@ def main():
     print("RESULTS")
     print("="*60)
     print(f"Solved: {result['solved']}")
-    print(f"Solution found by: {'S1 (LLM)' if result['s1_solved'] else 'S2 (LLM)' if result['s2_solved'] else 'None'}")
+    print(f"Solution found by: {'S1 (LLM)' if result['s1_solved'] else 'S2 (LRM)' if result['s2_solved'] else 'None'}")
     print(f"Iterations: {result['iterations']}")
     print(f"S1 time: {result['s1_time']:.2f}s")
     print(f"S2 time: {result['s2_time']:.2f}s")
